@@ -75,6 +75,23 @@ public:
     }
 };
 
+bool isOperator(const string& token) {
+    static const string operators = "+-*/^";
+    return token.length() == 1 && operators.find(token) != string::npos;
+}
+
+bool isFunction(const string& token) {
+    static const vector<string> functions = {"sin", "cos", "tan", "asin", "acos", "atan", "log", "ln", "sqrt", "abs"};
+    return find(functions.begin(), functions.end(), token) != functions.end();
+}
+
+int getPrecedence(const string& op) {
+    if (op == "^") return 4;
+    if (op == "*" || op == "/") return 3;
+    if (op == "+" || op == "-") return 2;
+    return 0;
+}
+
 int main()
 {
     return 0;
