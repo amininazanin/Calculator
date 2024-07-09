@@ -164,6 +164,57 @@ string infixToPostfix(const vector<string>& tokens) {
     return postfix.str();
 }
 
+double evaluatePostfix(const string& postfix) {
+    Stack<double> s;
+    stringstream ss(postfix);
+    string token;
+    map<string, function<double(double)>> unaryFunctions = {
+        {"sin", [](double x) { return sin(x); }},
+        {"cos", [](double x) { return cos(x); }},
+        {"tan", [](double x) { return tan(x); }},
+        {"asin", [](double x) { return asin(x); }},
+        {"acos", [](double x) { return acos(x); }},
+        {"atan", [](double x) { return atan(x); }},
+        {"log", [](double x) { return log10(x); }},
+        {"ln", [](double x) { return log(x); }},
+        {"sqrt", [](double x) { return sqrt(x); }},
+        {"abs", [](double x) { return abs(x); }}
+    };
+
+    while (ss >> token) {
+        if (isdigit(token[0]) || (token[0] == '-' && token.length() > 1 && isdigit(token[1]))) {
+            s.push(stod(token));
+        } else if (isOperator(token)) {
+            if (s.size() < 2) throw runtime_error("Invalid expression: insufficient operands for operator " + token);
+            double b = s.pop();
+            double a = s.pop();
+            double result;
+            switch (token[0]) {
+                case '+': result = a + b; break;
+                case '-': result = a - b; break;
+                case '*': result = a * b; break;
+                case '/':
+                    if (b == 0) throw runtime_error("Division by zero");
+                    result = a / b;
+                    break;
+                case '^': result = pow(a, b); break;
+            }
+            s.push(result);
+            cout << a << " " << token << " " << b << " = " << result << endl;
+        } else if (isFunction(token)) {
+            if (s.isEmpty()) throw runtime_error("Invalid expression: insufficient operands for function " + token);
+            double a = s.pop();
+            double result = unaryFunctions[token](a);
+            s.push(result);
+            cout << token << "(" << a << ") = " << result << endl;
+        }
+    }
+
+    if (s.size() != 1) throw runtime_error("Invalid expression: too many operands");
+    return s.peek();
+}
+
+
 
 int main()
 {
