@@ -217,6 +217,20 @@ double evaluatePostfix(const string& postfix) {
 
 
 int main()
-{
+{string expression;
+    cout << "Enter an arithmetic expression: ";
+    getline(cin, expression);
+
+    try {
+        vector<string> tokens = tokenize(expression);
+        string postfix = infixToPostfix(tokens);
+        cout << "Postfix expression: " << postfix << endl;
+        cout << "Step-by-step evaluation:" << endl;
+        double result = evaluatePostfix(postfix);
+        cout << "Final result: " << result << endl;
+    } catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
+
     return 0;
 }
